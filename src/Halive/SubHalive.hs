@@ -245,7 +245,7 @@ recompileExpressionsInFile fileName mFileContents expressions =
 
                 -- Load the dependencies of the main target
                 setContext
-                    (IIDecl . simpleImportDecl . ms_mod_name <$> graph)
+                    (IIDecl . simpleImportDecl . ms_mod_name <$> mgModSummaries graph)
 
                 -- Compile the expressions and return the results
                 results <- mapM dynCompileExpr expressions
@@ -303,7 +303,7 @@ logHandler ref dflags severity srcSpan style msg =
 output :: (GhcMonad m, Outputable a) => a -> m ()
 output a = do
     dfs <- getSessionDynFlags
-    let style = defaultUserStyle
+    let style = defaultUserStyle dfs
     let cntx  = initSDocContext dfs style
     liftIO $ print $ runSDoc (ppr a) cntx
 
